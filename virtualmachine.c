@@ -6,21 +6,24 @@ typedef enum {
    ADD,
    POP,
    SET,
-   HLT
+   HLT,
+   MOV
 } InstructionSet;
+
+typedef enum {
+   A, B, C, D, E, F,
+   NUM_OF_REGISTERS
+} Registers;
 
 const int program[] = {
     PSH, 5,
     PSH, 6,
     ADD,
     POP,
+	SET, A, 5,
+	MOV, A, B,
     HLT
 };
-
-typedef enum {
-   A, B, C, D, E, F,
-   NUM_OF_REGISTERS
-} Registers;
 
 int registers[NUM_OF_REGISTERS];
 
@@ -63,6 +66,16 @@ void eval(int instr) {
 			// all done!
 			break;
 		}
+		case SET: {
+			int reg = program[++ip];
+			registers[reg] = program[++ip];
+			break;
+		}
+		case MOV: {
+			int reg = program[++ip];
+			int regSecond = program[++ip];
+			registers[regSecond] = registers[reg];
+		}
     }
 }
 
@@ -71,4 +84,5 @@ int main() {
        eval(fetch());
        ip++;
 	}
+	printf("%i", registers[B]);
 }
